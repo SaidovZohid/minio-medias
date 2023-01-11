@@ -6,14 +6,15 @@ import (
 )
 
 type Config struct {
-	Minio Minio 
-	Postgres            PostgresConfig
+	Minio    Minio
+	Postgres PostgresConfig
 	HttpPort string
 }
 
 type Minio struct {
-	User string
-	Password string
+	Endpoint  string
+	AccessKey string
+	SecretKey string
 }
 
 type PostgresConfig struct {
@@ -24,18 +25,19 @@ type PostgresConfig struct {
 	Database string
 }
 
-func Load(path string) Config {
+func GetConfig(path string) Config {
 	godotenv.Load(path + "/.env")
 
 	conf := viper.New()
 	conf.AutomaticEnv()
 
 	cfg := Config{
-		HttpPort:            conf.GetString("HTTP_PORT"),
-		Minio; Minio{
-			User:    conf.GetString("MINIO_USER"),
-			Password conf.GetString("MINIO_PASSWOR")
-		}
+		HttpPort: conf.GetString("HTTP_PORT"),
+		Minio: Minio{
+			Endpoint:  conf.GetString("ENDPOINT"),
+			AccessKey: conf.GetString("ACCESS_KEY"),
+			SecretKey: conf.GetString("SECRET_KEY"),
+		},
 		Postgres: PostgresConfig{
 			Host:     conf.GetString("POSTGRES_HOST"),
 			Port:     conf.GetString("POSTGRES_PORT"),
